@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InscripcionesModule } from './inscripciones/inscripciones.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { InscripcionesModule } from './inscripciones/inscripciones.module';
       synchronize: true, // SOLO desarrollo
     }),
     InscripcionesModule,
+    AuthModule,
+    UsersModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
