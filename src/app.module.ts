@@ -8,6 +8,7 @@ import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
+    
       type: 'mysql',
       host: 'localhost',
       port: 3306,

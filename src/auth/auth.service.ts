@@ -1,33 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Admin } from 'src/admin/admin.entity';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     @InjectRepository(Admin)
-    private repo: Repository<Admin>,
+    private adminRepo: Repository<Admin>,
+
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
   ) {}
 
-  async login(email: string, password: string) {
-    const admin = await this.repo.findOne({ where: { email } });
+  async loginAdmin(email: string, password: string) {
+    const admin = await this.adminRepo.findOne({ where: { email } });
 
-    if (!admin) {
-      return { ok: false, message: 'Admin no encontrado' };
-    }
-
-    if (admin.password !== password) {
-      return { ok: false, message: 'Contraseña incorrecta' };
+    if (!admin || admin.password !== password) {
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
 
     return {
       ok: true,
-      admin: {
-        id: admin.id,
-        email: admin.email,
-      },
+      role: 'admin',
+    };
+  }
+
+  async loginUser(email: string, password: string) {
+    const user = await this.userRepo.findOne({ where: { email } });
+
+    if (!user || user.password !== password) {
+      throw new UnauthorizedException('Credenciales incorrectas');
+    }
+
+    return {
+      ok: true,
+      role: 'user',
     };
   }
 }
