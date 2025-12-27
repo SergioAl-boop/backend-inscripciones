@@ -5,19 +5,15 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('admin/login')
-  loginAdmin(
+  @Post('login')
+  async login(
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    return this.authService.loginAdmin(email, password);
-  }
+    const result = await this.authService.login(email, password);
 
-  @Post('user/login')
-  loginUser(
-    @Body('email') email: string,
-    @Body('password') password: string,
-  ) {
-    return this.authService.loginUser(email, password);
+    // La respuesta tendrá:
+    // { ok: true, token: 'JWT_TOKEN', role: 'admin|user', userId: number }
+    return result;
   }
 }
