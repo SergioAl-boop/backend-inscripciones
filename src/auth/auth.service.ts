@@ -59,4 +59,26 @@ export class AuthService {
 
     throw new UnauthorizedException('Credenciales incorrectas');
   }
+
+  async registerAdmins(email: string, password: string) {
+    const exists = await this.adminRepo.findOne({ where: { email } });
+    if (exists) throw new UnauthorizedException('El admin ya existe');
+
+    const newAdmin = this.adminRepo.create({ email, password });
+    await this.adminRepo.save(newAdmin);
+
+    console.log('🛡️ Admin registrado:', email);
+    return { ok: true, role: 'admin', userId: newAdmin.id };
+  }
+
+  async registerUsers(email: string, password: string) {
+    const exists = await this.userRepo.findOne({ where: { email } });
+    if (exists) throw new UnauthorizedException('El usuario ya existe');
+
+    const newUser = this.userRepo.create({ email, password });
+    await this.userRepo.save(newUser);
+
+    console.log('👤 Usuario registrado:', email);
+    return { ok: true, role: 'user', userId: newUser.id };
+  }
 }
