@@ -1,13 +1,30 @@
-import { Column } from "typeorm/decorator/columns/Column";
-import { PrimaryGeneratedColumn } from "typeorm/decorator/columns/PrimaryGeneratedColumn";
-import { Entity } from "typeorm/decorator/entity/Entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn
+} from 'typeorm';
 
-// inscripcion.entity.ts
+/**
+ * ENUM PARA EL ESTADO DE LA INSCRIPCIÓN
+ */
+export enum EstadoInscripcion {
+  PENDIENTE = 'PENDIENTE',
+  APROBADO = 'APROBADO',
+  RECHAZADO = 'RECHAZADO',
+}
+
 @Entity('inscripciones')
 export class Inscripcion {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  curso: string;
+
+  @Column()
+  instrumento: string;
 
   @Column()
   nombre: string;
@@ -18,10 +35,13 @@ export class Inscripcion {
   @Column()
   telefono: string;
 
-  @Column()
-  curso: string;
+  @Column({
+    type: 'enum',
+    enum: EstadoInscripcion,
+    default: EstadoInscripcion.PENDIENTE,
+  })
+  estado: EstadoInscripcion;
 
-  @Column()
-  instrumento: string;
-
+  @CreateDateColumn()
+  fechaRegistro: Date;
 }
