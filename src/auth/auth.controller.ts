@@ -18,9 +18,14 @@ export class AuthController {
   }
     // Registro de admins
   @Post('register-admins')
-  registerAdmins(@Body('email') email: string, @Body('password') password: string) {
-    return this.authService.registerAdmins(email, password);
-  }
+registerAdmins(
+  @Body('email') email: string,
+  @Body('password') password: string,
+  @Body('role') role: string, // ✅ AQUI ESTÁ LA CLAVE
+) {
+  return this.authService.registerAdmins(email, password, role);
+}
+
 
   // Registro de users
   @Post('register-users')

@@ -19,57 +19,70 @@ export class AuthService {
 
   async login(email: string, password: string) {
 
-    // 1️⃣ Buscar en admins
-    const admin = await this.adminRepo.findOne({ where: { email } });
-    if (admin && admin.password === password) {
-      console.log('🛡️ Login ADMIN:', email);
+  // 1️⃣ Buscar en admins
+  const admin = await this.adminRepo.findOne({ where: { email } });
+  if (admin && admin.password === password) {
+    console.log('🛡️ Login ADMIN:', email);
 
-      const token = this.jwtService.sign({
-        sub: admin.id,
-        email,
-        role: 'admin',
-      });
+    const token = this.jwtService.sign({
+      sub: admin.id,
+      email,
+      role: admin.role, // 🔹 dinámico
+    });
 
-      return {
-        ok: true,
-        token,
-        role: 'admin',
-        userId: admin.id,
-      };
-    }
-
-    // 2️⃣ Buscar en users
-    const user = await this.userRepo.findOne({ where: { email } });
-    if (user && user.password === password) {
-      console.log('👤 Login USER:', email);
-
-      const token = this.jwtService.sign({
-        sub: user.id,
-        email,
-        role: 'user',
-      });
-
-      return {
-        ok: true,
-        token,
-        role: 'user',
-        userId: user.id,
-      };
-    }
-
-    throw new UnauthorizedException('Credenciales incorrectas');
+    return {
+      ok: true,
+      token,
+      role: admin.role, // admin | superadmin
+      userId: admin.id,
+    };
   }
 
-  async registerAdmins(email: string, password: string) {
-    const exists = await this.adminRepo.findOne({ where: { email } });
-    if (exists) throw new UnauthorizedException('El admin ya existe');
+  // 2️⃣ Buscar en users
+  const user = await this.userRepo.findOne({ where: { email } });
+  if (user && user.password === password) {
+    console.log('👤 Login USER:', email);
 
-    const newAdmin = this.adminRepo.create({ email, password });
-    await this.adminRepo.save(newAdmin);
+    const token = this.jwtService.sign({
+      sub: user.id,
+      email,
+      role: 'user',
+    });
 
-    console.log('🛡️ Admin registrado:', email);
-    return { ok: true, role: 'admin', userId: newAdmin.id };
+    return {
+      ok: true,
+      token,
+      role: 'user',
+      userId: user.id,
+    };
   }
+
+  throw new UnauthorizedException('Credenciales incorrectas');
+}
+
+
+async registerAdmins(email: string, password: string, role?: string) {
+
+  const finalRole = role === 'superadmin' ? 'superadmin' : 'admin';
+
+  const exists = await this.adminRepo.findOne({ where: { email } });
+  if (exists) throw new UnauthorizedException('El admin ya existe');
+
+  const newAdmin = this.adminRepo.create({
+    email,
+    password,
+    role: finalRole,
+  });
+
+  await this.adminRepo.save(newAdmin);
+
+  return {
+    ok: true,
+    role: finalRole,
+    userId: newAdmin.id,
+  };
+}
+
 
   async registerUsers(email: string, password: string) {
     const exists = await this.userRepo.findOne({ where: { email } });

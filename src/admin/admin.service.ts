@@ -24,7 +24,7 @@ export class AdminService {
 
     return {
       ok: true,
-      role: 'admin',
+      role: admin.role,
     };
   }
 }
