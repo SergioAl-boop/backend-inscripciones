@@ -6,6 +6,7 @@ import { InscripcionesModule } from './inscripciones/inscripciones.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
+import { ArmoniaModule } from './armonia/armonia.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     UsersModule,
     AdminModule,
+    ArmoniaModule,
   ],
 })
 export class AppModule {}
