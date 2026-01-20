@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { ArmoniaModule } from './armonia/armonia.module';
+import { DonacionesModule } from './donaciones/donaciones.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ArmoniaModule } from './armonia/armonia.module';
     UsersModule,
     AdminModule,
     ArmoniaModule,
+    DonacionesModule,
   ],
 })
 export class AppModule {}
